@@ -55,3 +55,18 @@ rules:
            protocol: request.scheme
            responseCode: response.code
            responseSize: response.size
+  - kind: access-logs
+    adapter: sdtrace
+    params:
+      log:
+        descriptor_name: stackdriver.trace
+        labels:
+          start: request.time
+          end: response.time
+          method: request.method
+          url: request.path
+          host: request.host
+          parent_span_id: request.headers["x-b3-spanid"]
+          trace_id: request.headers["x-b3-traceid"]
+          service: target.service
+

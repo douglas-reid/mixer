@@ -193,3 +193,16 @@ logs:
       responseSize: 2 # INT64
       referer: 1 # STRING
       userAgent: 1 # STRING
+  - name: stackdriver.trace
+    display_name: Stackdriver trace
+    payload_format: TEXT
+    log_template: '{{.start}}'
+    labels:
+      start: 5 #TIMESTAMP
+      end: 5 #TIMESTAMP
+      method: 1 #STRING
+      url: 1 #STRING
+      host: 1 #STRING
+      parent_span_id: 1 #STRING
+      trace_id: 1 #STRING
+      service: 1 #STRING

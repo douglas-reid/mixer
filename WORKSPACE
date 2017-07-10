@@ -493,3 +493,9 @@ git_repository(
     commit = "9a3ac467ba862432c75e42cecff7aa5c2980e3b8",  # Jun 18, 2017 (no releases)
     remote = "https://github.com/istio/test-infra.git",
 )
+
+new_go_repository(
+    name = "org_golang_x_sync",
+    commit = "f52d1811a62927559de87708c8913c1650ce4f26",
+    importpath = "golang.org/x/sync",
+)

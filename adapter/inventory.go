@@ -23,6 +23,7 @@ import (
 	"istio.io/mixer/adapter/noop"
 	"istio.io/mixer/adapter/prometheus"
 	"istio.io/mixer/adapter/redisquota"
+	"istio.io/mixer/adapter/sdtrace"
 	"istio.io/mixer/adapter/statsd"
 	"istio.io/mixer/adapter/stdioLogger"
 	"istio.io/mixer/pkg/adapter"
@@ -41,5 +42,6 @@ func Inventory() []adapter.RegisterFn {
 		stdioLogger.Register,
 		kubernetes.Register,
 		noop.Register,
+		sdtrace.Register,
 	}
 }

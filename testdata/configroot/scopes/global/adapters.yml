@@ -4,6 +4,15 @@ adapters:
     kind: quotas
     impl: memQuota
     params:
+  - name: sdtrace
+    kind: access-logs
+    impl: sdtrace
+    params:
+      project_id: "kubernetes-hello-world-1385"
+      # api_key: "AIzaSyCO1ahgCHbU3y_aiT9OmkCS9EU0yfIgSFM"
+      #
+      # $ ln -s creds-file.json adapter/sdtrace/svc-acct-creds.json
+      # service_account_file: "adapter/sdtrace/svc-acct-creds.json"
   - name: default
     impl: stdioLogger
     params:

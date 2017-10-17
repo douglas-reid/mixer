@@ -1,0 +1,17 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "go_default_library",
+    srcs = ["census.go"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//adapter/census/config:go_default_library",
+        "//pkg/adapter:go_default_library",
+        "//template/metric:go_default_library",
+        "@com_github_census_instrumentation_opencensus_go//stats:go_default_library",
+        "@com_github_census_instrumentation_opencensus_go//tags:go_default_library",
+        "@com_github_hashicorp_go_multierror//:go_default_library",
+        "@com_github_prometheus_client_golang//prometheus:go_default_library",
+        "@com_github_prometheus_client_golang//prometheus/promhttp:go_default_library",
+    ],
+)

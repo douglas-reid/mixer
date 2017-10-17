@@ -1,0 +1,82 @@
+// Copyright 2017 Istio Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+
+package adapter.census.config;
+
+import "google/protobuf/duration.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "config";
+option (gogoproto.goproto_getters_all) = false;
+option (gogoproto.equal_all) = false;
+option (gogoproto.gostring_all) = false;
+
+message Params {
+    repeated View views = 1;
+    int64 handler_port = 2;
+}
+
+message View {
+    string name = 1;
+    string display_name = 2;
+    
+    Measure measure = 3;
+
+    oneof aggregation {
+        Count count = 4;
+        Distribution distribution = 5;
+    }
+
+    oneof window {
+        Cumulative cumulative = 6;
+        SlidingTime sliding_time = 7;
+        SlidingCount sliding_count = 8;
+    }
+
+    repeated string tag_names = 9;
+}
+
+message Measure {
+    string name = 1;
+    string instance_name = 2;
+    string display_name = 3;
+    string unit = 4;
+
+    enum Kind {
+        INT = 0;
+        FLOAT = 1;
+    }
+
+    Kind kind = 5;
+}
+
+message Count {}
+
+message Distribution {
+    repeated double bounds = 1;
+}
+
+message Cumulative {}
+
+message SlidingTime {
+    google.protobuf.Duration window_duration = 1 [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+    int64 sub_intervals = 2;
+}
+
+message SlidingCount {
+    uint64 samples = 1;
+    int64 subsets = 2;
+}

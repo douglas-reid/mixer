@@ -22,20 +22,24 @@ import (
 	"istio.io/mixer/adapter/stackdriver/config"
 	"istio.io/mixer/adapter/stackdriver/log"
 	sdmetric "istio.io/mixer/adapter/stackdriver/metric"
+	"istio.io/mixer/adapter/stackdriver/trace"
 	"istio.io/mixer/pkg/adapter"
 	"istio.io/mixer/template/logentry"
 	"istio.io/mixer/template/metric"
+	"istio.io/mixer/template/tracespan"
 )
 
 type (
 	builder struct {
 		m metric.HandlerBuilder
 		l logentry.HandlerBuilder
+		t tracespan.HandlerBuilder
 	}
 
 	handler struct {
 		m metric.Handler
 		l logentry.Handler
+		t tracespan.Handler
 	}
 )
 
@@ -51,14 +55,16 @@ var (
 func GetInfo() adapter.Info {
 	return adapter.Info{
 		Name:        "stackdriver",
-		Impl:        "istio.io/mixer/adapte/stackdriver",
+		Impl:        "istio.io/mixer/adapter/stackdriver",
 		Description: "Publishes StackDriver metrics and logs.",
 		SupportedTemplates: []string{
 			metric.TemplateName,
 			logentry.TemplateName,
 		},
 		DefaultConfig: &config.Params{},
-		NewBuilder:    func() adapter.HandlerBuilder { return &builder{m: sdmetric.NewBuilder(), l: log.NewBuilder()} },
+		NewBuilder: func() adapter.HandlerBuilder {
+			return &builder{m: sdmetric.NewBuilder(), l: log.NewBuilder(), t: trace.NewBuilder()}
+		},
 	}
 }
 
@@ -69,13 +75,19 @@ func (b *builder) SetMetricTypes(metrics map[string]*metric.Type) {
 func (b *builder) SetLogEntryTypes(entries map[string]*logentry.Type) {
 	b.l.SetLogEntryTypes(entries)
 }
+
+func (b *builder) SetTraceSpanTypes(spans map[string]*tracespan.Type) {
+	b.t.SetTraceSpanTypes(spans)
+}
+
 func (b *builder) SetAdapterConfig(c adapter.Config) {
 	b.m.SetAdapterConfig(c)
 	b.l.SetAdapterConfig(c)
+	b.t.SetAdapterConfig(c)
 }
 
 func (b *builder) Validate() (ce *adapter.ConfigErrors) {
-	return ce.Extend(b.m.Validate()).Extend(b.l.Validate())
+	return ce.Extend(b.m.Validate()).Extend(b.l.Validate()).Extend(b.t.Validate())
 }
 
 // Build creates a stack driver handler object.
@@ -92,7 +104,13 @@ func (b *builder) Build(ctx context.Context, env adapter.Env) (adapter.Handler, 
 	}
 	lh, _ := l.(logentry.Handler)
 
-	return &handler{m: mh, l: lh}, nil
+	t, err := b.t.Build(ctx, env)
+	if err != nil {
+		return nil, err
+	}
+	th, _ := t.(tracespan.Handler)
+
+	return &handler{m: mh, l: lh, t: th}, nil
 }
 
 func (h *handler) Close() error {
@@ -105,4 +123,8 @@ func (h *handler) HandleMetric(ctx context.Context, values []*metric.Instance) e
 
 func (h *handler) HandleLogEntry(ctx context.Context, values []*logentry.Instance) error {
 	return h.l.HandleLogEntry(ctx, values)
+}
+
+func (h *handler) HandleTraceSpan(ctx context.Context, values []*tracespan.Instance) error {
+	return h.t.HandleTraceSpan(ctx, values)
 }

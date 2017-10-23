@@ -7,7 +7,7 @@ spec:
   # We'll use the default value from the adapter, once per minute, so we don't need to supply a value.
   # pushInterval: 1m
   # Must be supplied for the stackdriver adapter to work
-  project_id: <your project ID>
+  project_id: kubernetes-hello-world-1385
   # One of the following must be set; the preferred method is `appCredentials`, which corresponds to
   # Google Application Default Credentials. See:
   #    https://developers.google.com/identity/protocols/application-default-credentials
@@ -76,6 +76,7 @@ spec:
     - stackdriverrequestsize.metric
     - stackdriverresponsesize.metric
     - stackdriverglobalmr.logentry
+    - default.tracespan
 ---
 apiVersion: "config.istio.io/v1alpha2"
 kind: logentry
@@ -87,8 +88,8 @@ spec:
   timestamp: request.time
   variables:
     originIp: origin.ip | ip("0.0.0.0")
-    targetIp: target.ip | ip("0.0.0.0")
-    sourceUser: origin.user | ""
+    targetIp: destination.ip | ip("0.0.0.0")
+    sourceUser: source.user | ""
     method: request.method | ""
     url: request.path | ""
     protocol: request.scheme | "http"
@@ -182,3 +183,27 @@ spec:
     # When using the global MR, this must be filled in, preferably matching the
     # project_id given above in stackdriver config.
     project_id: '"<your project ID>"'
+---
+apiVersion: "config.istio.io/v1alpha2"
+kind: tracespan
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  traceId: request.headers["x-b3-traceid"] | " "
+  spanId: request.headers["x-b3-spanid"] | " "
+  parentSpanId: request.headers["x-b3-parentspanid"] | " "
+  spanName: destination.service
+  startTime: request.time
+  endTime: response.time
+  statusCode: response.code | 200
+  statusMessage: request.method | "nothing"
+  attributes:
+    source_service: source.service | ""
+    source_version: source.labels["version"] | ""
+    responseSize: response.size | 0
+    requestSize: request.size | 0
+    sourceUser: source.user | ""
+    method: request.method | ""
+    url: request.path | ""
+    protocol: request.scheme | "http"

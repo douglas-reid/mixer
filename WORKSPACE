@@ -623,3 +623,21 @@ git_repository(
     commit = "b0822890273f91d5aa8c40ea1a89ba01e0f0ee9d",  # Aug 22, 2017
     remote = "https://github.com/istio/test-infra.git",
 )
+
+go_repository(
+    name = "com_github_uber_jaeger_client_go",
+    commit = "ffe98ab2252526eee5389b09328d6433024625f6",
+    importpath = "github.com/uber/jaeger-client-go",
+)
+
+go_repository(
+    name = "com_github_uber_jaeger_lib",
+    commit = "bc381f836083a0f7d5778d4216022388c4aeaf46",
+    importpath = "github.com/uber/jaeger-lib",
+)
+
+go_repository(
+    name = "com_github_codahale_hdrhistogram",
+    commit = "3a0bb77429bd3a61596f5e8a3172445844342120",
+    importpath = "github.com/codahale/hdrhistogram",
+)

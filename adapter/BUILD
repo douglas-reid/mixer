@@ -16,6 +16,7 @@ inventory_library(
         "stdio": "istio.io/mixer/adapter/stdio",
         "svcctrl": "istio.io/mixer/adapter/svcctrl",
         "memquota": "istio.io/mixer/adapter/memquota",
+        "jaeger": "istio.io/mixer/adapter/jaeger",
     },
     deps = [
         "//adapter/denier:go_default_library",
@@ -27,5 +28,6 @@ inventory_library(
         "//adapter/statsd:go_default_library",
         "//adapter/stdio:go_default_library",
         "//adapter/svcctrl:go_default_library",
+        "//adapter/jaeger:go_default_library",
     ],
 )

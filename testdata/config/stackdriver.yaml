@@ -190,10 +190,11 @@ metadata:
   name: default
   namespace: istio-system
 spec:
+  serviceName: destination.service
   traceId: request.headers["x-b3-traceid"] | " "
   spanId: request.headers["x-b3-spanid"] | " "
   parentSpanId: request.headers["x-b3-parentspanid"] | " "
-  spanName: destination.service
+  spanName: request.path | "/"
   startTime: request.time
   endTime: response.time
   statusCode: response.code | 200
@@ -214,6 +215,8 @@ metadata:
   name: handler
   namespace: istio-system
 spec:
+  zipkinAddress: "http://localhost:9411/api/v1/spans"
+  jaegerAddress: "http://localhost:14268/api/traces?format=jaeger.thrift"
 ---
 apiVersion: "config.istio.io/v1alpha2"
 kind: rule

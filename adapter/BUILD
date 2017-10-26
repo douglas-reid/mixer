@@ -20,6 +20,7 @@ inventory_library(
     },
     deps = [
         "//adapter/denier:go_default_library",
+        "//adapter/jaeger:go_default_library",
         "//adapter/list:go_default_library",
         "//adapter/memquota:go_default_library",
         "//adapter/noop:go_default_library",
@@ -28,6 +29,5 @@ inventory_library(
         "//adapter/statsd:go_default_library",
         "//adapter/stdio:go_default_library",
         "//adapter/svcctrl:go_default_library",
-        "//adapter/jaeger:go_default_library",
     ],
 )

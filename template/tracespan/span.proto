@@ -32,4 +32,5 @@ message Template {
     map<string, istio.mixer.v1.config.descriptor.ValueType> attributes = 7;
     int64 status_code = 8;
     string status_message = 9;
+    string service_name = 10; // to come from Context
 }

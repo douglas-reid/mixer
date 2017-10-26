@@ -24,5 +24,6 @@ option (gogoproto.equal_all) = false;
 option (gogoproto.gostring_all) = false;
 
 message Params {
-
+    string zipkin_address = 1;
+    string jaeger_address = 2;
 }
